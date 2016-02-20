@@ -339,6 +339,33 @@ class Test extends AbstractTest
             ],
         ]);
 
+        $connection->exec("
+            UPDATE `s_user`
+            SET `id` = 3
+            WHERE `id` = 1 AND `name` = 'Alex'
+        ");
+
+        $result = $connection->fetchAll("
+            SELECT `id`, COUNT(*) AS `count`
+            FROM `s_user`
+            GROUP BY `id`;
+        ");
+
+        $this->assertSame($result, [
+            [
+                'id' => '1',
+                'count' => '1'
+            ],
+            [
+                'id' => '3',
+                'count' => '1'
+            ],
+            [
+                'id' => '5',
+                'count' => '2'
+            ],
+        ]);
+
         $this->clear(['s_user']);
     }
 

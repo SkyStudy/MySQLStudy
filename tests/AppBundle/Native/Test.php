@@ -65,13 +65,13 @@ class Test extends AbstractTest
 
     private function clear(array $tables)
     {
-        $connection = $this->getConnection();
+        $list = [];
 
         foreach ($tables as $table) {
-            $connection->exec("
-                DROP TABLE `$table`;
-            ");
+            $list[] = "DROP TABLE `$table`;";
         }
 
+        $connection = $this->getConnection();
+        $connection->exec(join('', $list));
     }
 }

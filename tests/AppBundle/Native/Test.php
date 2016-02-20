@@ -110,6 +110,33 @@ class Test extends AbstractTest
         ];
 
         $result = $connection->fetchAll('
+            SELECT * FROM `s_user`;
+        ');
+
+        $this->assertSame($result, [$expectUserAlex, $expectUserAnna]);
+
+        $result = $connection->fetchAll('
+            SELECT * FROM `s_user`
+            ORDER BY `name`;
+        ');
+
+        $this->assertSame($result, [$expectUserAlex, $expectUserAnna]);
+
+        $result = $connection->fetchAll('
+            SELECT * FROM `s_user`
+            ORDER BY `name` ASC;
+        ');
+
+        $this->assertSame($result, [$expectUserAlex, $expectUserAnna]);
+
+        $result = $connection->fetchAll('
+            SELECT * FROM `s_user`
+            ORDER BY `name` DESC;
+        ');
+
+        $this->assertSame($result, [$expectUserAnna, $expectUserAlex]);
+
+        $result = $connection->fetchAll('
             SELECT * FROM `s_user` WHERE `id` = 1;
         ');
 

@@ -74,29 +74,29 @@ class Test extends AbstractTest
         ];
         $expectUserList = [$expectUser];
 
-        $users = $connection->fetchAssoc('
+        $result = $connection->fetchAssoc('
             SELECT * FROM `s_user`;
         ');
 
-        $this->assertSame($users, $expectUser);
+        $this->assertSame($result, $expectUser);
 
-        $users = $connection->fetchAll('
+        $result = $connection->fetchAll('
             SELECT * FROM `s_user`;
         ');
 
-        $this->assertSame($users, $expectUserList);
+        $this->assertSame($result, $expectUserList);
 
-        $users = $connection->fetchAll('
+        $result = $connection->fetchAll('
             SELECT * FROM `s_user` WHERE `id` = 1;
         ');
 
-        $this->assertSame($users, $expectUserList);
+        $this->assertSame($result, $expectUserList);
 
-        $users = $connection->fetchAll('
+        $result = $connection->fetchAll('
             SELECT * FROM `s_user` WHERE `id` = 2;
         ');
 
-        $this->assertSame($users, []);
+        $this->assertSame($result, []);
 
         $this->clear(['s_user']);
     }

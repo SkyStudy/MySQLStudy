@@ -138,6 +138,45 @@ class Test extends AbstractTest
 
         $this->assertSame($result, [$expectUserAnna]);
 
+        $result = $connection->fetchAll("
+            SELECT COUNT(*)
+            FROM `s_user`;
+        ");
+
+        $this->assertSame($result, [[
+            'COUNT(*)' => '2'
+        ]]);
+
+        $result = $connection->fetchAll("
+            SELECT COUNT(*) AS `count`
+            FROM `s_user`;
+        ");
+
+        $this->assertSame($result, [[
+            'count' => '2'
+        ]]);
+
+        $result = $connection->fetchAll("
+            SELECT COUNT(*) AS `count`
+            FROM `s_user`
+            GROUP BY `id`;
+        ");
+
+        $this->assertSame($result, [[
+            'count' => '2'
+        ]]);
+
+        $result = $connection->fetchAll("
+            SELECT `id`, COUNT(*) AS `count`
+            FROM `s_user`
+            GROUP BY `id`;
+        ");
+
+        $this->assertSame($result, [[
+            'id' => '1',
+            'count' => '2'
+        ]]);
+
         $this->clear(['s_user']);
     }
 

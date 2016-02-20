@@ -254,6 +254,49 @@ class Test extends AbstractTest
             ],
         ]);
 
+        $result = $connection->fetchAll("
+            SELECT `id`, COUNT(*) AS `count`
+            FROM `s_user`
+            GROUP BY `id`
+            ORDER BY `count` ASC
+            LIMIT 1;
+        ");
+
+        $this->assertSame($result, [
+            [
+                'id' => '5',
+                'count' => '1'
+            ],
+        ]);
+
+        $result = $connection->fetchAll("
+            SELECT `id`, COUNT(*) AS `count`
+            FROM `s_user`
+            GROUP BY `id`
+            HAVING `count` > 1;
+        ");
+
+        $this->assertSame($result, [
+            [
+                'id' => '1',
+                'count' => '2'
+            ],
+        ]);
+
+        $result = $connection->fetchAll("
+            SELECT `name`, COUNT(*) AS `count`
+            FROM `s_user`
+            GROUP BY `name`
+            HAVING `count` > 1;
+        ");
+
+        $this->assertSame($result, [
+            [
+                'name' => 'Anna',
+                'count' => '2'
+            ],
+        ]);
+
         $this->clear(['s_user']);
     }
 

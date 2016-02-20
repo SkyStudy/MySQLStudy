@@ -52,7 +52,34 @@ class Test extends AbstractTest
 
     public function testInsert()
     {
+        $connection = $this->getConnection();
 
+        $connection->exec('
+            CREATE TABLE `s_user`(
+              `id` INT,
+              `name` CHAR(20)
+            );
+        ');
+
+        $user = [
+            'id' => 1,
+            'name' => 'Alex',
+        ];
+
+        $connection->insert('s_user', $user);
+
+        $users = $connection->fetchAll('
+            SELECT * FROM `s_user`;
+        ');
+
+        $this->assertSame($users, [
+            [
+                'id' => '1',
+                'name' => 'Alex',
+            ]
+        ]);
+
+        $this->clear(['s_user']);
     }
 
     /**

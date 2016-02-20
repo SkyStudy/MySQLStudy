@@ -394,6 +394,18 @@ class Test extends AbstractTest
         $this->clear(['s_user']);
     }
 
+
+    public function testStudents()
+    {
+        /**
+         * TODO:
+         * Використовуючи з'єднання - знайти всіх студентів які вчились тільки в одному університеті
+         * Using connections - to find all students who studied in only one university
+         * Маємо три таблиці - студенти, університети, і з’єднувальна таблиця - "багато до багато"
+         * We have three tables - students, universities and fittings table - "many to many"
+         */
+    }
+
     /**
      * @return Connection
      */

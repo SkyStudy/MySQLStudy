@@ -115,6 +115,29 @@ class Test extends AbstractTest
 
         $this->assertSame($result, [$expectUserAlex, $expectUserAnna]);
 
+        $result = $connection->fetchAll('
+            SELECT * FROM `s_user`
+            WHERE `id` = 1
+            LIMIT 1;
+        ');
+
+        $this->assertSame($result, [$expectUserAlex]);
+
+        $result = $connection->fetchAll('
+            SELECT * FROM `s_user`
+            WHERE `id` = 1
+            LIMIT 1
+            OFFSET 1;
+        ');
+
+        $this->assertSame($result, [$expectUserAnna]);
+
+        $result = $connection->fetchAll("
+            SELECT * FROM `s_user` WHERE `name` = 'Anna';
+        ");
+
+        $this->assertSame($result, [$expectUserAnna]);
+
         $this->clear(['s_user']);
     }
 

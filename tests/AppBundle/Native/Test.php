@@ -8,9 +8,13 @@ class Test extends AbstractTest
 {
     public function test()
     {
-        $this->getConnection()->exec('
-            DROP TABLE IF EXISTS s_first ;
+        $connection = $this->getConnection();
+
+        $statement = $connection->executeQuery('
+           SHOW TABLES;
         ');
+
+        $this->assertEmpty($statement->rowCount());
     }
 
     /**

@@ -297,7 +297,113 @@ class Test extends AbstractTest
             ],
         ]);
 
+        $connection->exec("
+            INSERT INTO `s_user`(`id`, `name`)
+            SELECT `id`, `name`
+            FROM `s_user`
+            WHERE `name` = 'Anna' AND `id` = 5
+            LIMIT 1;
+        ");
+
+        $result = $connection->fetchAll("
+            SELECT `id`, COUNT(*) AS `count`
+            FROM `s_user`
+            GROUP BY `id`;
+        ");
+
+        $this->assertSame($result, [
+            [
+                'id' => '1',
+                'count' => '2'
+            ],
+            [
+                'id' => '5',
+                'count' => '2'
+            ],
+        ]);
+
+        $result = $connection->fetchAll("
+            SELECT `name`, COUNT(*) AS `count`
+            FROM `s_user`
+            GROUP BY `name`;
+        ");
+
+        $this->assertSame($result, [
+            [
+                'name' => 'Alex',
+                'count' => '1'
+            ],
+            [
+                'name' => 'Anna',
+                'count' => '3'
+            ],
+        ]);
+
+        $connection->exec("
+            UPDATE `s_user`
+            SET `id` = 3
+            WHERE `id` = 1 AND `name` = 'Alex'
+        ");
+
+        $result = $connection->fetchAll("
+            SELECT `id`, COUNT(*) AS `count`
+            FROM `s_user`
+            GROUP BY `id`;
+        ");
+
+        $this->assertSame($result, [
+            [
+                'id' => '1',
+                'count' => '1'
+            ],
+            [
+                'id' => '3',
+                'count' => '1'
+            ],
+            [
+                'id' => '5',
+                'count' => '2'
+            ],
+        ]);
+
+        $connection->exec("
+            INSERT INTO `s_user` (`id`, `name`)
+            VALUES (15, 'Mister');
+        ");
+
+        $result = $connection->fetchAll('
+            SELECT * FROM `s_user` WHERE `id` = 15;
+        ');
+
+        $this->assertSame($result, [[
+            'id' => '15',
+            'name' => 'Mister',
+        ]]);
+
+        $connection->exec('
+            DELETE FROM `s_user`
+            WHERE `id` > 5
+        ');
+
+        $result = $connection->fetchAll('
+            SELECT * FROM `s_user` WHERE `id` = 15;
+        ');
+
+        $this->assertSame($result, []);
+
         $this->clear(['s_user']);
+    }
+
+
+    public function testStudents()
+    {
+        /**
+         * TODO:
+         * Використовуючи з'єднання - знайти всіх студентів які вчились тільки в одному університеті
+         * Using connections - to find all students who studied in only one university
+         * Маємо три таблиці - студенти, університети, і з’єднувальна таблиця - "багато до багато"
+         * We have three tables - students, universities and fittings table - "many to many"
+         */
     }
 
     /**

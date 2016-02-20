@@ -35,7 +35,21 @@ class Test extends AbstractTest
         $this->assertSame(1, $statement->rowCount());
 
         $connection->exec('
+            CREATE TABLE `s_second`(
+              `id` INT
+            );
+        ');
+
+        $statement = $connection->executeQuery('
+           SHOW TABLES;
+        ');
+
+        $this->assertSame(['s_first', 's_second'], $statement->fetchAll(\PDO::FETCH_COLUMN));
+        $this->assertSame(2, $statement->rowCount());
+
+        $connection->exec('
             DROP TABLE `s_first`;
+            DROP TABLE `s_second`;
         ');
     }
 

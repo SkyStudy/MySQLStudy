@@ -6,7 +6,7 @@ use Doctrine\DBAL\Connection;
 
 class Test extends AbstractTest
 {
-    public function test()
+    public function testEmptyDatabase()
     {
         $connection = $this->getConnection();
 
@@ -15,6 +15,24 @@ class Test extends AbstractTest
         ');
 
         $this->assertEmpty($statement->rowCount());
+    }
+
+    public function testCreateTable()
+    {
+        $connection = $this->getConnection();
+
+        $connection->exec('
+            CREATE TABLE `s_first`(
+              `id` INT
+            );
+        ');
+
+        $statement = $connection->executeQuery('
+           SHOW TABLES;
+        ');
+
+        $this->assertSame('s_first', $statement->fetch(\PDO::FETCH_COLUMN));
+        $this->assertSame(1, $statement->rowCount());
     }
 
     /**

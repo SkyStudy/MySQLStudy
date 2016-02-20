@@ -47,10 +47,12 @@ class Test extends AbstractTest
         $this->assertSame(['s_first', 's_second'], $statement->fetchAll(\PDO::FETCH_COLUMN));
         $this->assertSame(2, $statement->rowCount());
 
-        $connection->exec('
-            DROP TABLE `s_first`;
-            DROP TABLE `s_second`;
-        ');
+        $this->clear(['s_first', 's_second']);
+    }
+
+    public function testInsert()
+    {
+
     }
 
     /**
@@ -59,5 +61,17 @@ class Test extends AbstractTest
     private function getConnection()
     {
         return $this->container->get('doctrine')->getConnection();
+    }
+
+    private function clear(array $tables)
+    {
+        $connection = $this->getConnection();
+
+        foreach ($tables as $table) {
+            $connection->exec("
+                DROP TABLE `$table`;
+            ");
+        }
+
     }
 }

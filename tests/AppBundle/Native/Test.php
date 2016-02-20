@@ -33,6 +33,10 @@ class Test extends AbstractTest
 
         $this->assertSame('s_first', $statement->fetch(\PDO::FETCH_COLUMN));
         $this->assertSame(1, $statement->rowCount());
+
+        $connection->exec('
+            DROP TABLE `s_first`;
+        ');
     }
 
     /**

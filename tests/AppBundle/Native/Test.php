@@ -61,12 +61,10 @@ class Test extends AbstractTest
             );
         ');
 
-        $userAlex = [
+        $connection->insert('s_user', [
             'id' => 1,
             'name' => 'Alex',
-        ];
-
-        $connection->insert('s_user', $userAlex);
+        ]);
 
         $expectUserAlex = [
             'id' => '1',
@@ -97,12 +95,10 @@ class Test extends AbstractTest
 
         $this->assertSame($result, []);
 
-        $userAnna = [
+        $connection->insert('s_user', [
             'id' => 1,
             'name' => 'Anna',
-        ];
-
-        $connection->insert('s_user', $userAnna);
+        ]);
 
         $expectUserAnna = [
             'id' => '1',
@@ -203,6 +199,60 @@ class Test extends AbstractTest
             'id' => '1',
             'count' => '2'
         ]]);
+
+        $connection->insert('s_user', [
+            'id' => 5,
+            'name' => 'Anna',
+        ]);
+
+        $expectUserAnnaClone = [
+            'id' => '5',
+            'name' => 'Anna',
+        ];
+
+        $result = $connection->fetchAll("
+            SELECT COUNT(*) AS `count`
+            FROM `s_user`;
+        ");
+
+        $this->assertSame($result, [[
+            'count' => '3'
+        ]]);
+
+        $result = $connection->fetchAll("
+            SELECT `id`, COUNT(*) AS `count`
+            FROM `s_user`
+            GROUP BY `id`;
+        ");
+
+        $this->assertSame($result, [
+            [
+                'id' => '1',
+                'count' => '2'
+            ],
+            [
+                'id' => '5',
+                'count' => '1'
+            ],
+        ]);
+
+        $result = $connection->fetchAll("
+            SELECT `id`, COUNT(*) AS `count`
+            FROM `s_user`
+            GROUP BY `id`
+            ORDER BY `count` ASC;
+        ");
+
+        $this->assertSame($result, [
+            [
+                'id' => '5',
+                'count' => '1'
+            ],
+            [
+                'id' => '1',
+                'count' => '2'
+            ],
+        ]);
 
         $this->clear(['s_user']);
     }

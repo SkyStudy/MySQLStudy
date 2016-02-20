@@ -366,6 +366,31 @@ class Test extends AbstractTest
             ],
         ]);
 
+        $connection->exec("
+            INSERT INTO `s_user` (`id`, `name`)
+            VALUES (15, 'Mister');
+        ");
+
+        $result = $connection->fetchAll('
+            SELECT * FROM `s_user` WHERE `id` = 15;
+        ');
+
+        $this->assertSame($result, [[
+            'id' => '15',
+            'name' => 'Mister',
+        ]]);
+
+        $connection->exec('
+            DELETE FROM `s_user`
+            WHERE `id` > 5
+        ');
+
+        $result = $connection->fetchAll('
+            SELECT * FROM `s_user` WHERE `id` = 15;
+        ');
+
+        $this->assertSame($result, []);
+
         $this->clear(['s_user']);
     }
 

@@ -68,16 +68,29 @@ class Test extends AbstractTest
 
         $connection->insert('s_user', $user);
 
+        $expectUser = [
+            'id' => '1',
+            'name' => 'Alex',
+        ];
+        $expectUserList = [$expectUser];
+
         $users = $connection->fetchAll('
             SELECT * FROM `s_user`;
         ');
 
-        $this->assertSame($users, [
-            [
-                'id' => '1',
-                'name' => 'Alex',
-            ]
-        ]);
+        $this->assertSame($users, $expectUserList);
+
+        $users = $connection->fetchAll('
+            SELECT * FROM `s_user` WHERE `id` = 1;
+        ');
+
+        $this->assertSame($users, $expectUserList);
+
+        $users = $connection->fetchAll('
+            SELECT * FROM `s_user` WHERE `id` = 2;
+        ');
+
+        $this->assertSame($users, []);
 
         $this->clear(['s_user']);
     }

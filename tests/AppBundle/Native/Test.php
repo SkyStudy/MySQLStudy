@@ -61,42 +61,59 @@ class Test extends AbstractTest
             );
         ');
 
-        $user = [
+        $userAlex = [
             'id' => 1,
             'name' => 'Alex',
         ];
 
-        $connection->insert('s_user', $user);
+        $connection->insert('s_user', $userAlex);
 
-        $expectUser = [
+        $expectUserAlex = [
             'id' => '1',
             'name' => 'Alex',
         ];
-        $expectUserList = [$expectUser];
 
         $result = $connection->fetchAssoc('
             SELECT * FROM `s_user`;
         ');
 
-        $this->assertSame($result, $expectUser);
+        $this->assertSame($result, $expectUserAlex);
 
         $result = $connection->fetchAll('
             SELECT * FROM `s_user`;
         ');
 
-        $this->assertSame($result, $expectUserList);
+        $this->assertSame($result, [$expectUserAlex]);
 
         $result = $connection->fetchAll('
             SELECT * FROM `s_user` WHERE `id` = 1;
         ');
 
-        $this->assertSame($result, $expectUserList);
+        $this->assertSame($result, [$expectUserAlex]);
 
         $result = $connection->fetchAll('
             SELECT * FROM `s_user` WHERE `id` = 2;
         ');
 
         $this->assertSame($result, []);
+
+        $userAnna = [
+            'id' => 1,
+            'name' => 'Anna',
+        ];
+
+        $connection->insert('s_user', $userAnna);
+
+        $expectUserAnna = [
+            'id' => '1',
+            'name' => 'Anna',
+        ];
+
+        $result = $connection->fetchAll('
+            SELECT * FROM `s_user` WHERE `id` = 1;
+        ');
+
+        $this->assertSame($result, [$expectUserAlex, $expectUserAnna]);
 
         $this->clear(['s_user']);
     }

@@ -74,6 +74,12 @@ class Test extends AbstractTest
         ];
         $expectUserList = [$expectUser];
 
+        $users = $connection->fetchAssoc('
+            SELECT * FROM `s_user`;
+        ');
+
+        $this->assertSame($users, $expectUser);
+
         $users = $connection->fetchAll('
             SELECT * FROM `s_user`;
         ');

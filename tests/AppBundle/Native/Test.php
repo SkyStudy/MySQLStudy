@@ -297,6 +297,48 @@ class Test extends AbstractTest
             ],
         ]);
 
+        $connection->exec("
+            INSERT INTO `s_user`(`id`, `name`)
+            SELECT `id`, `name`
+            FROM `s_user`
+            WHERE `name` = 'Anna' AND `id` = 5
+            LIMIT 1;
+        ");
+
+        $result = $connection->fetchAll("
+            SELECT `id`, COUNT(*) AS `count`
+            FROM `s_user`
+            GROUP BY `id`;
+        ");
+
+        $this->assertSame($result, [
+            [
+                'id' => '1',
+                'count' => '2'
+            ],
+            [
+                'id' => '5',
+                'count' => '2'
+            ],
+        ]);
+
+        $result = $connection->fetchAll("
+            SELECT `name`, COUNT(*) AS `count`
+            FROM `s_user`
+            GROUP BY `name`;
+        ");
+
+        $this->assertSame($result, [
+            [
+                'name' => 'Alex',
+                'count' => '1'
+            ],
+            [
+                'name' => 'Anna',
+                'count' => '3'
+            ],
+        ]);
+
         $this->clear(['s_user']);
     }
 

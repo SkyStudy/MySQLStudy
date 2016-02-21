@@ -1,7 +1,5 @@
 imports:
     - { resource: parameters.yml }
-    - { resource: security.yml }
-    - { resource: services.yml }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
@@ -13,14 +11,11 @@ framework:
     #translator:      { fallbacks: ["%locale%"] }
     secret:          "%secret%"
     router:
-        resource: "%kernel.root_dir%/config/routing.yml"
         strict_requirements: ~
     form:            ~
     csrf_protection: ~
     validation:      { enable_annotations: true }
     #serializer:      { enable_annotations: true }
-    templating:
-        engines: ['twig']
         #assets_version: SomeVersionScheme
     default_locale:  "%locale%"
     trusted_hosts:   ~
@@ -32,11 +27,6 @@ framework:
     fragments:       ~
     http_method_override: true
     assets: ~
-
-# Twig Configuration
-twig:
-    debug:            "%kernel.debug%"
-    strict_variables: "%kernel.debug%"
 
 # Doctrine Configuration
 doctrine:
@@ -59,11 +49,3 @@ doctrine:
         auto_generate_proxy_classes: "%kernel.debug%"
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
-
-# Swiftmailer Configuration
-swiftmailer:
-    transport: "%mailer_transport%"
-    host:      "%mailer_host%"
-    username:  "%mailer_user%"
-    password:  "%mailer_password%"
-    spool:     { type: memory }

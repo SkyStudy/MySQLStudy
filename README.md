@@ -7,4 +7,4 @@
 * [progress: 1 from 100+]
 
 ##### Изучаем PHP и MySQL (Линн Бейли, Майкл Моррисон) (2010)
-* [progress: 1 from 100+]
+* [progress: 27 from 100+]

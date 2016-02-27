@@ -415,11 +415,6 @@ class Test extends AbstractTest
                 'name' => 'Anna',
             ]);
 
-            $expectUserAnnaClone = [
-                'id' => '5',
-                'name' => 'Anna',
-            ];
-
             $result = $connection->fetchAll("
                 SELECT COUNT(*) AS `count`
                 FROM `s_user`;
@@ -428,6 +423,17 @@ class Test extends AbstractTest
             $this->assertSame($result, [[
                 'count' => '3'
             ]]);
+
+            $result = $connection->fetchAll("
+                SELECT `name`
+                FROM `s_user`;
+            ");
+
+            $this->assertSame($result, [
+                ['name' => 'Alex'],
+                ['name' => 'Anna'],
+                ['name' => 'Anna']
+            ]);
 
             $result = $connection->fetchAll("
                 SELECT `id`, COUNT(*) AS `count`

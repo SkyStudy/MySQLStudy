@@ -176,7 +176,7 @@ class Test extends AbstractTest
                   `price` INT,
                   `quantity` INT
                 );
-                ');
+            ');
 
             $connection->insert('s_product', [
                 'code' => 1,
@@ -193,6 +193,30 @@ class Test extends AbstractTest
             $result = $statement->fetch(\PDO::FETCH_COLUMN);
 
             $this->assertSame($result, '3000');
+
+            $result = $connection->fetchAll('
+                SELECT `name`, `price` * `quantity`
+                FROM `s_product`;
+            ');
+
+            $this->assertSame($result, [
+                [
+                    'name' => 'socks',
+                    '`price` * `quantity`' => '3000',
+                ]
+            ]);
+
+            $result = $connection->fetchAll('
+                SELECT `name`, `price` * `quantity` AS `total`
+                FROM `s_product`;
+            ');
+
+            $this->assertSame($result, [
+                [
+                    'name' => 'socks',
+                    'total' => '3000',
+                ]
+            ]);
         } finally {
             $this->clear(['s_product']);
         }

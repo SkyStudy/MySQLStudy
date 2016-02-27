@@ -154,6 +154,14 @@ class Test extends AbstractTest
         $result = $statement->fetch(\PDO::FETCH_COLUMN);
 
         $this->assertSame($result, '10');
+
+        $statement = $connection->executeQuery('
+           SELECT 5 % 2;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '1');
     }
 
 

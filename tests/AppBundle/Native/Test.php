@@ -115,7 +115,13 @@ class Test extends AbstractTest
 
         $this->assertSame($result, '56');
 
-        
+        $statement = $connection->executeQuery('
+           SELECT 10 / 2;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '5.0000');
     }
 
     public function testInsert()

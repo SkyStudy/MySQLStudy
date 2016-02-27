@@ -98,6 +98,14 @@ class Test extends AbstractTest
         $result = $statement->fetch(\PDO::FETCH_COLUMN);
 
         $this->assertSame($result, '1');
+
+        $statement = $connection->executeQuery('
+           SELECT 1 + 1;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '2');
     }
 
     public function testInsert()

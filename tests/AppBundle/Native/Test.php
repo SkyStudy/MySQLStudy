@@ -697,6 +697,8 @@ class Test extends AbstractTest
                 ]
             ];
 
+            $this->assertSame($result, $expect);
+
             $result = $connection->fetchAll('
                 SELECT `s_product`.`name`, `s_warehouse`.`quantity`
                 FROM `s_product`
@@ -757,6 +759,29 @@ class Test extends AbstractTest
          * Маємо три таблиці - студенти, університети, і з’єднувальна таблиця - "багато до багато"
          * We have three tables - students, universities and fittings table - "many to many"
          */
+
+        $connection = $this->getConnection();
+
+        try {
+            $connection->exec('
+                CREATE TABLE `s_student`(
+                  `code` INT,
+                  `name` VARCHAR(255)
+                );
+
+                CREATE TABLE `s_university`(
+                  `code` INT,
+                  `name` VARCHAR(255)
+                );
+
+                CREATE TABLE `s_student_to_university`(
+                  `student_code` INT,
+                  `university_code` INT
+                );
+            ');
+        } finally {
+            $this->clear(['s_student', 's_university', 's_student_to_university']);
+        }
     }
 
     /**

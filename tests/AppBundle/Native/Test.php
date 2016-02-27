@@ -164,7 +164,30 @@ class Test extends AbstractTest
         $this->assertSame($result, '1');
     }
 
+    public function testOperationAction()
+    {
+        $connection = $this->getConnection();
 
+        $connection->exec('
+            CREATE TABLE `s_product`(
+              `code` INT,
+              `name` VARCHAR(255),
+              `price` INT,
+              `quantity` INT
+            );
+            ');
+
+        $connection->insert('s_product', [
+            'code' => 1,
+            'name' => 'socks',
+            'price' => 30,
+            'quantity' => 100,
+        ]);
+
+
+        $this->clear(['s_product']);
+
+    }
 
     public function testInsert()
     {

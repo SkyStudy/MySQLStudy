@@ -164,6 +164,35 @@ class Test extends AbstractTest
         $this->assertSame($result, '1');
     }
 
+    public function testLogicOperation()
+    {
+        $connection = $this->getConnection();
+
+        $statement = $connection->executeQuery('
+           SELECT 2 = 2;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '1');
+
+        $statement = $connection->executeQuery('
+           SELECT 2 > 2;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '0');
+
+        $statement = $connection->executeQuery('
+           SELECT 1 < 2 AND 2 > 1;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '1');
+    }
+
     public function testOperationAction()
     {
         $connection = $this->getConnection();

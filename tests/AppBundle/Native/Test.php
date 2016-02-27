@@ -168,25 +168,34 @@ class Test extends AbstractTest
     {
         $connection = $this->getConnection();
 
-        $connection->exec('
-            CREATE TABLE `s_product`(
-              `code` INT,
-              `name` VARCHAR(255),
-              `price` INT,
-              `quantity` INT
-            );
+        try {
+            $connection->exec('
+                CREATE TABLE `s_product`(
+                  `code` INT,
+                  `name` VARCHAR(255),
+                  `price` INT,
+                  `quantity` INT
+                );
+                ');
+
+            $connection->insert('s_product', [
+                'code' => 1,
+                'name' => 'socks',
+                'price' => 30,
+                'quantity' => 100,
+            ]);
+
+            $statement = $connection->executeQuery('
+               SELECT `price` * `quantity`
+               FROM `s_product`;
             ');
 
-        $connection->insert('s_product', [
-            'code' => 1,
-            'name' => 'socks',
-            'price' => 30,
-            'quantity' => 100,
-        ]);
+            $result = $statement->fetch(\PDO::FETCH_COLUMN);
 
-
-        $this->clear(['s_product']);
-
+            $this->assertSame($result, '3000');
+        } finally {
+            $this->clear(['s_product']);
+        }
     }
 
     public function testInsert()

@@ -603,6 +603,152 @@ class Test extends AbstractTest
         $this->clear(['s_user']);
     }
 
+    public function testJoin()
+    {
+        $connection = $this->getConnection();
+
+        try {
+            $connection->exec('
+                CREATE TABLE `s_product`(
+                  `code` INT,
+                  `name` VARCHAR(255)
+                );
+            ');
+
+            $connection->exec('
+                CREATE TABLE `s_warehouse`(
+                  `product_code` INT,
+                  `price` INT,
+                  `quantity` INT
+                );
+            ');
+
+            $connection->exec("
+                INSERT INTO `s_product`(`code`, `name`)
+                VALUES
+                  (1, 'Green Shirt'),
+                  (2, 'White Shirt'),
+                  (3, 'Red Shirt');
+            ");
+
+            $connection->exec("
+                INSERT INTO `s_warehouse`(`product_code`, `price`, `quantity`)
+                VALUES
+                  (1, 120, 8),
+                  (2, 125, 5),
+                  (3, 200, 0);
+            ");
+
+            $result = $connection->fetchAll('
+                SELECT * FROM `s_product`
+                JOIN `s_warehouse` ON (`product_code` = `code`)
+            ');
+
+            $expect = [
+                [
+                    'code' => '1',
+                    'name' => 'Green Shirt',
+                    'product_code' => '1',
+                    'price' => '120',
+                    'quantity' => '8',
+                ],
+                [
+                    'code' => '2',
+                    'name' => 'White Shirt',
+                    'product_code' => '2',
+                    'price' => '125',
+                    'quantity' => '5',
+                ],
+                [
+                    'code' => '3',
+                    'name' => 'Red Shirt',
+                    'product_code' => '3',
+                    'price' => '200',
+                    'quantity' => '0',
+                ]
+            ];
+
+            $this->assertSame($result, $expect);
+
+            $result = $connection->fetchAll('
+                SELECT * FROM `s_product`
+                JOIN `s_warehouse` ON (`code` = `product_code`)
+            ');
+
+            $this->assertSame($result, $expect);
+
+            $result = $connection->fetchAll('
+                SELECT `name`, `quantity` FROM `s_product`
+                JOIN `s_warehouse` ON (`code` = `product_code`)
+            ');
+
+            $expect = [
+                [
+                    'name' => 'Green Shirt',
+                    'quantity' => '8',
+                ],
+                [
+                    'name' => 'White Shirt',
+                    'quantity' => '5',
+                ],
+                [
+                    'name' => 'Red Shirt',
+                    'quantity' => '0',
+                ]
+            ];
+
+            $this->assertSame($result, $expect);
+
+            $result = $connection->fetchAll('
+                SELECT `s_product`.`name`, `s_warehouse`.`quantity`
+                FROM `s_product`
+                JOIN `s_warehouse` ON (`s_product`.`code` = `s_warehouse`.`product_code`)
+            ');
+
+            $this->assertSame($result, $expect);
+
+            $result = $connection->fetchAll('
+                SELECT `p`.`name`, `w`.`quantity`
+                FROM `s_product` `p`
+                JOIN `s_warehouse` `w` ON (`p`.`code` = `w`.`product_code`)
+            ');
+
+            $this->assertSame($result, $expect);
+
+            $result = $connection->fetchAll('
+                SELECT `p`.`name`, `w`.`quantity`
+                FROM `s_product` AS `p`
+                JOIN `s_warehouse` AS `w` ON (`p`.`code` = `w`.`product_code`)
+            ');
+
+            $this->assertSame($result, $expect);
+
+            $result = $connection->fetchAll('
+                SELECT `p`.`name` AS `n`, `w`.`quantity` AS `q`
+                FROM `s_product` AS `p`
+                JOIN `s_warehouse` AS `w` ON (`p`.`code` = `w`.`product_code`)
+            ');
+
+            $expect = [
+                [
+                    'n' => 'Green Shirt',
+                    'q' => '8',
+                ],
+                [
+                    'n' => 'White Shirt',
+                    'q' => '5',
+                ],
+                [
+                    'n' => 'Red Shirt',
+                    'q' => '0',
+                ]
+            ];
+
+            $this->assertSame($result, $expect);
+        } finally {
+            $this->clear(['s_product', 's_warehouse']);
+        }
+    }
 
     public function testStudents()
     {
@@ -613,6 +759,29 @@ class Test extends AbstractTest
          * Маємо три таблиці - студенти, університети, і з’єднувальна таблиця - "багато до багато"
          * We have three tables - students, universities and fittings table - "many to many"
          */
+
+        $connection = $this->getConnection();
+
+        try {
+            $connection->exec('
+                CREATE TABLE `s_student`(
+                  `code` INT,
+                  `name` VARCHAR(255)
+                );
+
+                CREATE TABLE `s_university`(
+                  `code` INT,
+                  `name` VARCHAR(255)
+                );
+
+                CREATE TABLE `s_student_to_university`(
+                  `student_code` INT,
+                  `university_code` INT
+                );
+            ');
+        } finally {
+            $this->clear(['s_student', 's_university', 's_student_to_university']);
+        }
     }
 
     /**

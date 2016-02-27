@@ -436,6 +436,16 @@ class Test extends AbstractTest
             ]);
 
             $result = $connection->fetchAll("
+                SELECT DISTINCT `name`
+                FROM `s_user`;
+            ");
+
+            $this->assertSame($result, [
+                ['name' => 'Alex'],
+                ['name' => 'Anna'],
+            ]);
+
+            $result = $connection->fetchAll("
                 SELECT `id`, COUNT(*) AS `count`
                 FROM `s_user`
                 GROUP BY `id`;

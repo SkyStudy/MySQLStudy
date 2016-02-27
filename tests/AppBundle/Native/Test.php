@@ -697,6 +697,12 @@ class Test extends AbstractTest
                 ]
             ];
 
+            $result = $connection->fetchAll('
+                SELECT `s_product`.`name`, `s_warehouse`.`quantity`
+                FROM `s_product`
+                JOIN `s_warehouse` ON (`s_product`.`code` = `s_warehouse`.`product_code`)
+            ');
+
             $this->assertSame($result, $expect);
         } finally {
             $this->clear(['s_product', 's_warehouse']);

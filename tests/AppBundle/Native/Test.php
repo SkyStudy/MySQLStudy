@@ -172,6 +172,43 @@ class Test extends AbstractTest
         $this->assertSame($result, '36');
     }
 
+    public function testFunction()
+    {
+        $connection = $this->getConnection();
+
+        $statement = $connection->executeQuery("
+            SELECT 'function';
+        ");
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, 'function');
+
+        $statement = $connection->executeQuery("
+            SELECT LENGTH('function');
+        ");
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '8');
+
+        $statement = $connection->executeQuery("
+            SELECT GREATEST(3, 5, 1);
+        ");
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '5');
+
+        $statement = $connection->executeQuery("
+            SELECT LEAST(3, 5, 1);
+        ");
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '1');
+    }
+
     public function testLogicOperation()
     {
         $connection = $this->getConnection();

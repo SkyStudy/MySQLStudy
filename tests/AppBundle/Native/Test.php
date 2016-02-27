@@ -704,6 +704,45 @@ class Test extends AbstractTest
             ');
 
             $this->assertSame($result, $expect);
+
+            $result = $connection->fetchAll('
+                SELECT `p`.`name`, `w`.`quantity`
+                FROM `s_product` `p`
+                JOIN `s_warehouse` `w` ON (`p`.`code` = `w`.`product_code`)
+            ');
+
+            $this->assertSame($result, $expect);
+
+            $result = $connection->fetchAll('
+                SELECT `p`.`name`, `w`.`quantity`
+                FROM `s_product` AS `p`
+                JOIN `s_warehouse` AS `w` ON (`p`.`code` = `w`.`product_code`)
+            ');
+
+            $this->assertSame($result, $expect);
+
+            $result = $connection->fetchAll('
+                SELECT `p`.`name` AS `n`, `w`.`quantity` AS `q`
+                FROM `s_product` AS `p`
+                JOIN `s_warehouse` AS `w` ON (`p`.`code` = `w`.`product_code`)
+            ');
+
+            $expect = [
+                [
+                    'n' => 'Green Shirt',
+                    'q' => '8',
+                ],
+                [
+                    'n' => 'White Shirt',
+                    'q' => '5',
+                ],
+                [
+                    'n' => 'Red Shirt',
+                    'q' => '0',
+                ]
+            ];
+
+            $this->assertSame($result, $expect);
         } finally {
             $this->clear(['s_product', 's_warehouse']);
         }

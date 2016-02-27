@@ -50,6 +50,43 @@ class Test extends AbstractTest
         $this->clear(['s_first', 's_second']);
     }
 
+    public function testRename()
+    {
+        $connection = $this->getConnection();
+
+        $statement = $connection->executeQuery('
+           SHOW TABLES;
+        ');
+
+        $this->assertEmpty($statement->rowCount());
+
+        $connection = $this->getConnection();
+
+        $connection->exec('
+            CREATE TABLE `s_before`(
+              `id` INT
+            );
+        ');
+
+        $statement = $connection->executeQuery('
+           SHOW TABLES;
+        ');
+
+        $this->assertSame(['s_before'], $statement->fetchAll(\PDO::FETCH_COLUMN));
+
+        $connection->exec('
+            RENAME TABLE `s_before` TO `s_after`;
+        ');
+
+        $statement = $connection->executeQuery('
+           SHOW TABLES;
+        ');
+
+        $this->assertSame(['s_after'], $statement->fetchAll(\PDO::FETCH_COLUMN));
+
+        $this->clear(['s_after']);
+    }
+
     public function testInsert()
     {
         $connection = $this->getConnection();

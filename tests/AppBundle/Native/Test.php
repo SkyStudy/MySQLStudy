@@ -162,6 +162,14 @@ class Test extends AbstractTest
         $result = $statement->fetch(\PDO::FETCH_COLUMN);
 
         $this->assertSame($result, '1');
+
+        $statement = $connection->executeQuery('
+           SELECT (1 + 2 + 3) * 1 * 2 * 3;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '36');
     }
 
     public function testLogicOperation()

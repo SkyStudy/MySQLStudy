@@ -87,6 +87,19 @@ class Test extends AbstractTest
         $this->clear(['s_after']);
     }
 
+    public function testOperation()
+    {
+        $connection = $this->getConnection();
+
+        $statement = $connection->executeQuery('
+           SELECT 1;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '1');
+    }
+
     public function testInsert()
     {
         $connection = $this->getConnection();

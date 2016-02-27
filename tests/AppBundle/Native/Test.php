@@ -87,6 +87,178 @@ class Test extends AbstractTest
         $this->clear(['s_after']);
     }
 
+    public function testOperation()
+    {
+        $connection = $this->getConnection();
+
+        $statement = $connection->executeQuery('
+           SELECT 1;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '1');
+
+        $statement = $connection->executeQuery('
+           SELECT 1 + 1;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '2');
+
+        $statement = $connection->executeQuery('
+           SELECT 10 - 3;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '7');
+
+        $statement = $connection->executeQuery('
+           SELECT 7 * 8;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '56');
+
+        $statement = $connection->executeQuery('
+           SELECT 10 / 2;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '5.0000');
+
+        $statement = $connection->executeQuery('
+           SELECT 10 / 0;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, null);
+
+        $statement = $connection->executeQuery('
+           SELECT 5 DIV 2;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '2');
+
+        $statement = $connection->executeQuery('
+           SELECT 95 MOD 17 ;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '10');
+
+        $statement = $connection->executeQuery('
+           SELECT 5 % 2;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '1');
+
+        $statement = $connection->executeQuery('
+           SELECT (1 + 2 + 3) * 1 * 2 * 3;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '36');
+    }
+
+    public function testLogicOperation()
+    {
+        $connection = $this->getConnection();
+
+        $statement = $connection->executeQuery('
+           SELECT 2 = 2;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '1');
+
+        $statement = $connection->executeQuery('
+           SELECT 2 > 2;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '0');
+
+        $statement = $connection->executeQuery('
+           SELECT 1 < 2 AND 2 > 1;
+        ');
+
+        $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+        $this->assertSame($result, '1');
+    }
+
+    public function testOperationAction()
+    {
+        $connection = $this->getConnection();
+
+        try {
+            $connection->exec('
+                CREATE TABLE `s_product`(
+                  `code` INT,
+                  `name` VARCHAR(255),
+                  `price` INT,
+                  `quantity` INT
+                );
+            ');
+
+            $connection->insert('s_product', [
+                'code' => 1,
+                'name' => 'socks',
+                'price' => 30,
+                'quantity' => 100,
+            ]);
+
+            $statement = $connection->executeQuery('
+               SELECT `price` * `quantity`
+               FROM `s_product`;
+            ');
+
+            $result = $statement->fetch(\PDO::FETCH_COLUMN);
+
+            $this->assertSame($result, '3000');
+
+            $result = $connection->fetchAll('
+                SELECT `name`, `price` * `quantity`
+                FROM `s_product`;
+            ');
+
+            $this->assertSame($result, [
+                [
+                    'name' => 'socks',
+                    '`price` * `quantity`' => '3000',
+                ]
+            ]);
+
+            $result = $connection->fetchAll('
+                SELECT `name`, `price` * `quantity` AS `total`
+                FROM `s_product`;
+            ');
+
+            $this->assertSame($result, [
+                [
+                    'name' => 'socks',
+                    'total' => '3000',
+                ]
+            ]);
+        } finally {
+            $this->clear(['s_product']);
+        }
+    }
+
     public function testInsert()
     {
         $connection = $this->getConnection();

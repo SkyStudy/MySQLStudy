@@ -820,6 +820,36 @@ class Test extends AbstractTest
         }
     }
 
+    public function testRow()
+    {
+        $connection = $this->getConnection();
+
+        $connection->exec('
+            CREATE TABLE `users`(
+              `id` INT,
+              `name` CHAR(20)
+            );
+        ');
+
+        $connection->exec("
+            INSERT INTO `users`(`id`, `name`)
+            VALUES
+              (1, 'Alex'),
+              (17, 'Reen');
+        ");
+
+        $result = $connection->fetchAll('
+            SELECT * FROM `users` WHERE (`id`) IN (ROW(1));
+        ');
+
+        $this->assertSame($result, [[
+            'id' => '1',
+            'name' => 'Alex',
+        ]]);
+
+        $this->clear(['users']);
+    }
+
     public function testStudents()
     {
         /**

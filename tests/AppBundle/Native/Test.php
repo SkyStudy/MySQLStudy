@@ -838,14 +838,20 @@ class Test extends AbstractTest
               (17, 'Reen');
         ");
 
-        $result = $connection->fetchAll('
-            SELECT * FROM `users` WHERE (`id`) IN (ROW(1));
-        ');
+        $result = $connection->fetchAll("
+            SELECT * FROM `users` WHERE (`id`, `name`) IN (ROW(1, 'Alex'), ROW(17, 'Reen'));
+        ");
 
-        $this->assertSame($result, [[
-            'id' => '1',
-            'name' => 'Alex',
-        ]]);
+        $this->assertSame($result, [
+            [
+                'id' => '1',
+                'name' => 'Alex',
+            ],
+            [
+                'id' => '17',
+                'name' => 'Reen',
+            ],
+        ]);
 
         $this->clear(['users']);
     }

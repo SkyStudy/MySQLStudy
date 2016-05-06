@@ -18,31 +18,52 @@ class JSONTest extends ConnectionTestCase
 
     public function dataProvider()
     {
-        $sql = <<<'SQL'
-            SELECT JSON_OBJECT('id', 1);
-SQL;
+        $sql = "SELECT JSON_OBJECT('id', 1)";
 
         yield [
             $sql,
             '{"id": 1}'
         ];
 
-        $sql = <<<'SQL'
-            SELECT JSON_OBJECT('id', 1, 'name', 'Reen');
-SQL;
+        $sql = "SELECT JSON_OBJECT('id', 1, 'name', 'Reen')";
 
         yield [
             $sql,
             '{"id": 1, "name": "Reen"}'
         ];
 
-        $sql = <<<'SQL'
-            SELECT JSON_ARRAY('id', 1, 'name', 'Reen');
-SQL;
+        $sql = "SELECT JSON_ARRAY('id', 1, 'name', 'Reen')";
 
         yield [
             $sql,
             '["id", 1, "name", "Reen"]'
+        ];
+
+        foreach ($this->lengthDataProvider() as list($json, $length)) {
+            yield ["SELECT JSON_LENGTH('$json')", (string)$length];
+        }
+    }
+
+    private function lengthDataProvider()
+    {
+        yield [
+            '[]',
+            0
+        ];
+
+        yield [
+            '{}',
+            0
+        ];
+
+        yield [
+            '[1, 2, 3]',
+            3
+        ];
+
+        yield [
+            '{"id": 1}',
+            1
         ];
     }
 }

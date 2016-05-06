@@ -2,9 +2,7 @@
 
 namespace Tests\AppBundle\Native;
 
-use Doctrine\DBAL\Connection;
-
-class Test extends AbstractTest
+class TestCase extends ConnectionTestCase
 {
     public function testEmptyDatabase()
     {
@@ -888,14 +886,6 @@ class Test extends AbstractTest
         } finally {
             $this->clear(['s_student', 's_university', 's_student_to_university']);
         }
-    }
-
-    /**
-     * @return Connection
-     */
-    private function getConnection()
-    {
-        return $this->container->get('doctrine')->getConnection();
     }
 
     private function clear(array $tables)

@@ -13,6 +13,6 @@ class JSONTest extends ConnectionTestCase
 SQL
         );
 
-        $this->assertSame($result, '{"id":1}');
+        $this->assertSame('{"id": 1}', $result);
     }
 }

@@ -80,14 +80,16 @@ SQL;
             '0'
         ];
 
-        $sql = <<<'SQL'
-          SELECT JSON_VALID('');
-SQL;
+        $sql = "SELECT JSON_VALID('')";
 
         yield [
             $sql,
             '0'
         ];
+
+        foreach ($this->typeDataProvider() as list($json, $type)) {
+            yield ["SELECT JSON_TYPE('$json')", $type];
+        }
     }
 
     private function lengthDataProvider()
@@ -110,6 +112,19 @@ SQL;
         yield [
             '{"id": 1}',
             1
+        ];
+    }
+
+    private function typeDataProvider()
+    {
+        yield [
+            '1',
+            'INTEGER'
+        ];
+
+        yield [
+            '"text"',
+            'STRING'
         ];
     }
 }

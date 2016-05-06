@@ -42,6 +42,52 @@ class JSONTest extends ConnectionTestCase
         foreach ($this->lengthDataProvider() as list($json, $length)) {
             yield ["SELECT JSON_LENGTH('$json')", (string)$length];
         }
+
+        $sql = <<<'SQL'
+          SELECT JSON_VALID('"some text"');
+SQL;
+
+        yield [
+            $sql,
+            '1'
+        ];
+
+        $sql = "SELECT JSON_VALID('some text')";
+
+        yield [
+            $sql,
+            '0'
+        ];
+
+        $sql = "SELECT JSON_VALID('{}')";
+
+        yield [
+            $sql,
+            '1'
+        ];
+
+        $sql = "SELECT JSON_VALID('{}')";
+
+        yield [
+            $sql,
+            '1'
+        ];
+
+        $sql = "SELECT JSON_VALID('{1}')";
+
+        yield [
+            $sql,
+            '0'
+        ];
+
+        $sql = <<<'SQL'
+          SELECT JSON_VALID('');
+SQL;
+
+        yield [
+            $sql,
+            '0'
+        ];
     }
 
     private function lengthDataProvider()

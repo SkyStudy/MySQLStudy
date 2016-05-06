@@ -4,15 +4,27 @@ namespace Tests\AppBundle\Native;
 
 class JSONTest extends ConnectionTestCase
 {
-    public function testObject()
+    /**
+     * @dataProvider objectDataProvider
+     * @param $sql
+     * @param $expected
+     */
+    public function testObject($sql, $expected)
     {
         $connection = $this->getConnection();
 
-        $result = $connection->fetchColumn(<<<'SQL'
-          SELECT JSON_OBJECT('id', 1);
-SQL
-        );
+        $this->assertSame($expected, $connection->fetchColumn($sql));
+    }
 
-        $this->assertSame('{"id": 1}', $result);
+    public function objectDataProvider()
+    {
+        $sql = <<<'SQL'
+          SELECT JSON_OBJECT('id', 1);
+SQL;
+
+        yield [
+            $sql,
+            '{"id": 1}'
+        ];
     }
 }

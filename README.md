@@ -19,6 +19,9 @@
 ##### HTML и CSS: Путь к совершенству (Бен Хеник) (2011)
 * [progress: 54 from 336]
 
+##### Common
+* `CONCAT`
+
 ##### JSON
 * `JSON_OBJECT`
 * `JSON_ARRAY`

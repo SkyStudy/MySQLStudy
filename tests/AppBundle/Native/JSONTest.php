@@ -2,20 +2,8 @@
 
 namespace Tests\AppBundle\Native;
 
-class JSONTest extends ConnectionTestCase
+class JSONTest extends SingleResultTestCase
 {
-    /**
-     * @dataProvider dataProvider
-     * @param $sql
-     * @param $expected
-     */
-    public function testO($sql, $expected)
-    {
-        $connection = $this->getConnection();
-
-        $this->assertSame($expected, $connection->fetchColumn($sql));
-    }
-
     public function dataProvider()
     {
         $sql = "SELECT JSON_OBJECT('id', 1)";

@@ -887,16 +887,4 @@ class TestCase extends ConnectionTestCase
             $this->clear(['s_student', 's_university', 's_student_to_university']);
         }
     }
-
-    private function clear(array $tables)
-    {
-        $list = [];
-
-        foreach ($tables as $table) {
-            $list[] = "DROP TABLE `$table`;";
-        }
-
-        $connection = $this->getConnection();
-        $connection->exec(join('', $list));
-    }
 }

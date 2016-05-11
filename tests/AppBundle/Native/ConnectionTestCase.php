@@ -29,4 +29,16 @@ abstract class ConnectionTestCase extends KernelTestCase
     {
         return $this->connection;
     }
+
+    protected function clear(array $tables)
+    {
+        $list = [];
+
+        foreach ($tables as $table) {
+            $list[] = "DROP TABLE `$table`;";
+        }
+
+        $connection = $this->getConnection();
+        $connection->exec(join('', $list));
+    }
 }

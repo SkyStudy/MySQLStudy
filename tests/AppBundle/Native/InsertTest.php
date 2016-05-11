@@ -17,19 +17,29 @@ class InsertTest extends ConnectionTestCase
                 );
             ');
 
-            $connection->executeUpdate("
+            $response = $connection->executeUpdate("
                 INSERT INTO `users` (`name`)
                 VALUE ('Alex');
             ");
+            $this->assertSame(1, $response);
 
             $this->assertSame('1', $connection->lastInsertId());
 
-            $connection->executeUpdate("
+            $response = $connection->executeUpdate("
                 INSERT INTO `users` (`name`)
                 VALUE ('Reen');
             ");
+            $this->assertSame(1, $response);
 
             $this->assertSame('2', $connection->lastInsertId());
+
+            $response = $connection->executeUpdate("
+                INSERT IGNORE INTO `users` (`name`)
+                VALUE ('Alex');
+            ");
+
+            $this->assertSame(0, $response);
+            $this->assertSame('0', $connection->lastInsertId());
 
         } finally {
             $this->clear(['users']);

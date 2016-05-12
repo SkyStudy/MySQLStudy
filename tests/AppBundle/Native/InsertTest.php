@@ -76,6 +76,23 @@ class InsertTest extends ConnectionTestCase
 
             $this->assertSame(1, $response);
             $this->assertSame('1', $connection->lastInsertId());
+
+            $response = $connection->executeUpdate("
+                INSERT IGNORE INTO `users`
+                SET `name` = 'Reen',
+                    `age` = 17
+            ");
+
+            $this->assertSame(0, $response);
+            $this->assertSame('0', $connection->lastInsertId());
+
+            $age = $connection->fetchColumn('
+                SELECT `age`
+                FROM `users`
+                WHERE `id` = 1
+            ');
+
+            $this->assertSame('16', $age);
         } finally {
             $this->clear(['users']);
         }

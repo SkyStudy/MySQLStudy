@@ -97,4 +97,60 @@ class InsertTest extends ConnectionTestCase
             $this->clear(['users']);
         }
     }
+
+    public function testMulti()
+    {
+        $connection = $this->getConnection();
+
+        try {
+            $connection->exec('
+                CREATE TABLE `users` (
+                  `id` INT PRIMARY KEY AUTO_INCREMENT,
+                  `name` VARCHAR(255),
+                  UNIQUE KEY (`name`)
+                );
+            ');
+
+            $connection->executeUpdate("
+                INSERT INTO `users` (`name`)
+                VALUES ('Alex');
+            ");
+
+            $connection->executeUpdate("
+                INSERT INTO `users` (`name`)
+                VALUES
+                  ('Sky'),
+                  ('Reen')
+            ");
+
+            $stmt = $connection->prepare("
+                SELECT `id`, `name`
+                FROM `users`;
+            ");
+
+            $stmt->execute();
+
+            /**
+             * Something with `id` order
+             */
+            $expected = [
+                [
+                    'id' => '1',
+                    'name' => 'Alex',
+                ],
+                [
+                    'id' => '3',
+                    'name' => 'Reen',
+                ],
+                [
+                    'id' => '2',
+                    'name' => 'Sky',
+                ],
+            ];
+
+            $this->assertSame($expected, $stmt->fetchAll(\PDO::FETCH_ASSOC));
+        } finally {
+            $this->clear(['users']);
+        }
+    }
 }

@@ -53,4 +53,31 @@ class InsertTest extends ConnectionTestCase
             $this->clear(['users']);
         }
     }
+
+    public function testSet()
+    {
+        $connection = $this->getConnection();
+
+        try {
+            $connection->exec('
+                CREATE TABLE `users` (
+                  `id` INT PRIMARY KEY AUTO_INCREMENT,
+                  `age` TINYINT,
+                  `name` VARCHAR(255),
+                  UNIQUE KEY (`name`)
+                );
+            ');
+
+            $response = $connection->executeUpdate("
+                INSERT INTO `users`
+                SET `name` = 'Reen',
+                    `age` = 16
+            ");
+
+            $this->assertSame(1, $response);
+            $this->assertSame('1', $connection->lastInsertId());
+        } finally {
+            $this->clear(['users']);
+        }
+    }
 }

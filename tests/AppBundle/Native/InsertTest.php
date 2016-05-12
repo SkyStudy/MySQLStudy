@@ -35,6 +35,14 @@ class InsertTest extends ConnectionTestCase
 
             $response = $connection->executeUpdate("
                 INSERT IGNORE INTO `users` (`name`)
+                VALUE ('Sky');
+            ");
+            $this->assertSame(1, $response);
+
+            $this->assertSame('3', $connection->lastInsertId());
+
+            $response = $connection->executeUpdate("
+                INSERT IGNORE INTO `users` (`name`)
                 VALUE ('Alex');
             ");
 
